@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+#game-board {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px auto;
+    width: 80%;
+    max-width: 1200px;
+}
+
+#player1, #player2, #mid {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 30%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.hand, .deck, .xeri, #topCard {
+    border: 1px solid #000;
+    min-height: 50px;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.hand div, .deck div, #topCard div {
+    margin: 5px 0;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 20px 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.hand div {
+    cursor: pointer;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.hand div:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+
+#handP1 {
+    border: 2px solid red;
+    pointer-events: none; /* Disable clicks by default */
+}
+
+#handP2 {
+    border: 2px solid blue;
+    pointer-events: none; /* Disable clicks by default */
+}
+
+/* Highlight the current player's hand */
+#handP1.active {
+    pointer-events: auto;
+}
+
+#handP2.active {
+    pointer-events: auto;
+}
