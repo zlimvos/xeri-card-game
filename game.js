@@ -14,21 +14,30 @@ let lastPlayerToPickUp = null;
 let xeriCountP1 = 0;
 let xeriCountP2 = 0;
 
-
 function startGame() {
     initializeGame();
     firstDeal();
     updateGameBoard();
     enableCardClicks();
+    clearPreviousGameInfo();
     console.log("Game started");
 }
 
+function clearPreviousGameInfo() {
+    const deckP1Element = document.getElementById('deckP1');
+    const xeriP1Element = document.getElementById('xeriP1');
+    const deckP2Element = document.getElementById('deckP2');
+    const xeriP2Element = document.getElementById('xeriP2');
+
+    deckP1Element.innerHTML = '';
+    xeriP1Element.innerHTML = '';
+    deckP2Element.innerHTML = '';
+    xeriP2Element.innerHTML = '';
+}
+
 function initializeGame() {
-    // Create and shuffle the deck
     deck = createDeck();
     shuffleDeck(deck);
-
-    // Reset hands, decks, and top card
     handP1 = [];
     handP2 = [];
     deckP1 = [];
@@ -38,15 +47,13 @@ function initializeGame() {
     xeriP1 = [];
     xeriP2 = [];
     currentPlayer = 'Player 1';
-
     console.log("Game initialized");
-    console.log(deck); // Print the shuffled deck
+    console.log(deck);
 }
 
 function enableCardClicks() {
     const handP1Element = document.getElementById('handP1');
     const handP2Element = document.getElementById('handP2');
-
     if (currentPlayer === 'Player 1') {
         handP1Element.classList.add('active');
         handP2Element.classList.remove('active');
@@ -86,7 +93,6 @@ function firstDeal() {
     if (deckMid.length > 0) {
         TopCard.push(deckMid[deckMid.length - 1]);
     }
-
     console.log("First deal done");
     console.log("Player 1 hand:", handP1);
     console.log("Player 2 hand:", handP2);
@@ -136,11 +142,24 @@ function updateGameBoard() {
     const topCardElement = document.getElementById('topCard');
     topCardElement.innerHTML = TopCard.length > 0 ? `${TopCard[0].value} ${TopCard[0].suit}` : '';
 
+    // Update deck counts
+    updateDeckCounts();
+
     console.log("Game board updated");
 }
 
+function updateDeckCounts() {
+    // Update Player 1's deck count and Xeri count
+    const deckP1Element = document.getElementById('deckP1');
+    deckP1Element.innerHTML = `Deck: ${deckP1.length} cards<br>Ξερή: ${xeriCountP1}`;
+
+    // Update Player 2's deck count and Xeri count
+    const deckP2Element = document.getElementById('deckP2');
+    deckP2Element.innerHTML = `Deck: ${deckP2.length} cards<br>Ξερή: ${xeriCountP2}`;
+}
+
+
 function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
-    // Logic to handle the card play
     if (deckMid.length === 1 && TopCard.length > 0 && (chosen_card.value === TopCard[0].value)) {
         alert(`${player} made a Ξερή with ${chosen_card.value} ${chosen_card.suit}`);
         xeri.push(chosen_card);
@@ -159,7 +178,7 @@ function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
         TopCard = [];
         setTimeout(() => {
             alert(`${player} collects all cards from the table with ${chosen_card.value} ${chosen_card.suit}!`);
-        }, 100); // Small delay to ensure the alert shows after the board updates
+        }, 100);
         lastPlayerToPickUp = player;
     } else {
         deckMid.push(chosen_card);
@@ -168,11 +187,9 @@ function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
 
     hand.splice(idx, 1);
 
-    // Update game board after the move
     updateGameBoard();
     switchPlayer();
 
-    // Check if new deal is needed
     if (handP1.length === 0 && handP2.length === 0) {
         newDeal();
         if (handP1.length === 0 && handP2.length === 0) {
@@ -215,15 +232,30 @@ function calculateScore(deck, xeri) {
     return score;
 }
 
+function formatDeck(deck) {
+    return deck.map(card => {
+        const color = (card.value === '10' && card.suit === '♦') || (card.value === '2' && card.suit === '♣') || ['A', 'K', 'Q', 'J', '10'].includes(card.value) ? 'red' : 'black';
+        return `<span style="color: ${color}">${card.value}${card.suit}</span>`;
+    }).join(' ');
+}
+
 function endofgame() {
+    isGameEnding = true; // Set the flag to indicate the game is ending
+
     // Add remaining cards on the table to the last player's deck
     if (lastPlayerToPickUp === 'Player 1') {
         deckP1.push(...deckMid);
+        deckMid = []; // Clear the table
+
+        // Show alert indicating the player picked up the last cards
+        alert("Game Ended so Player 1 picked up the last cards!");
     } else if (lastPlayerToPickUp === 'Player 2') {
         deckP2.push(...deckMid);
-    }
+        deckMid = []; // Clear the table
 
-    deckMid = []; // Clear the table
+        // Show alert indicating the player picked up the last cards
+        alert("Game Ended so Player 2 picked up the last cards!");
+    }
 
     let scoreP1 = calculateScore(deckP1, xeriP1);
     let scoreP2 = calculateScore(deckP2, xeriP2);
@@ -234,14 +266,21 @@ function endofgame() {
         scoreP2 += 3;
     }
 
-    alert(`Final Scores:\nPlayer 1: ${scoreP1} (Ξερή: ${xeriCountP1})\nPlayer 2: ${scoreP2} (Ξερή: ${xeriCountP2})`);
-    if (scoreP1 > scoreP2) {
-        alert("Player 1 wins!");
-    } else if (scoreP2 > scoreP1) {
-        alert("Player 2 wins!");
-    } else {
-        alert("It's a tie!");
-    }
-}
+    // Update the 3rd box with all the cards in each player's deck
+    const xeriP1Element = document.getElementById('xeriP1');
+    xeriP1Element.innerHTML = formatDeck(deckP1);
 
-document.getElementById('endGame').addEventListener('click', endofgame);
+    const xeriP2Element = document.getElementById('xeriP2');
+    xeriP2Element.innerHTML = formatDeck(deckP2);
+
+    setTimeout(() => {
+        alert(`Final Scores:\nPlayer 1: ${scoreP1} (Ξερή: ${xeriCountP1})\nPlayer 2: ${scoreP2} (Ξερή: ${xeriCountP2})`);
+        if (scoreP1 > scoreP2) {
+            alert("Player 1 wins!");
+        } else if (scoreP2 > scoreP1) {
+            alert("Player 2 wins!");
+        } else {
+            alert("It's a tie!");
+        }
+    }, 100); // Small delay to ensure the final alerts show after the board updates
+}
