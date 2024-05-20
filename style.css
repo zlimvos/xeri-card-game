@@ -14,31 +14,24 @@ h1 {
     display: flex;
     justify-content: space-around;
     margin: 20px auto;
-    width: 90%;
+    width: 80%;
     max-width: 1200px;
 }
 
 #player1, #player2, #mid, #messages {
     border: 1px solid #ccc;
     padding: 10px;
+    width: 22%;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#player1, #player2 {
-    width: 20%;
-}
-
 #mid {
-    width: 10%; /* Half the width it was before */
+    width: 11%;
 }
 
-#messages {
-    width: 40%; /* The extra width from reducing column 2 */
-}
-
-.hand, .deck, .xeri, #topCard, .messages {
+.hand, .deck, .xeri, #topCard {
     border: 1px solid #000;
     min-height: 50px;
     margin-top: 10px;
@@ -106,39 +99,28 @@ button:disabled {
     pointer-events: auto;
 }
 
-/* Messages styling */
 .messages {
-    height: 400px; /* Adjust the height as needed */
-    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    height: 400px;
+    overflow-y: scroll;
+    text-align: left;
 }
 
 .message {
-    margin: 5px 0;
     padding: 5px;
-    border-radius: 5px;
-    background-color: #f1f1f1;
+    margin: 5px 0;
 }
 
-.message p {
-    margin: 0;
-}
-
-.message.player1 {
-    border-left: 5px solid red;
-}
-
-.message.player2 {
-    border-left: 5px solid blue;
-}
-
-.message.system {
-    border-left: 5px solid green;
-}
-
-.red {
+.message.red {
     color: red;
 }
 
-.black {
-    color: black;
+.message.blue {
+    color: blue;
+}
+
+.message.green {
+    color: green;
+}
+.underline {
+    text-decoration: underline;
 }

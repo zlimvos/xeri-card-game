@@ -1,4 +1,6 @@
 document.getElementById('startGame').addEventListener('click', startGame);
+document.getElementById('twoPlayerMode').addEventListener('click', () => setGameMode('twoPlayer'));
+document.getElementById('computerMode').addEventListener('click', () => setGameMode('computer'));
 
 let handP1 = [];
 let handP2 = [];
@@ -13,14 +15,24 @@ let deck = [];
 let lastPlayerToPickUp = null;
 let xeriCountP1 = 0;
 let xeriCountP2 = 0;
+let gameMode = 'twoPlayer';
+
+function setGameMode(mode) {
+    gameMode = mode;
+    document.getElementById('game-mode').style.display = 'none';
+    document.getElementById('startGame').style.display = 'block';
+    if (mode === 'computer') {
+        document.getElementById('player2Title').innerText = 'Xera.i.';
+    }
+}
 
 function startGame() {
     initializeGame();
     firstDeal();
     updateGameBoard();
     enableCardClicks();
-    clearMessages(); // Clear messages when starting a new game
-    addMessage("Game started", 'green');
+    document.getElementById('game-board').style.display = 'flex';
+    document.getElementById('startGame').style.display = 'none';
     console.log("Game started");
 }
 
@@ -52,6 +64,9 @@ function enableCardClicks() {
     } else {
         handP1Element.classList.remove('active');
         handP2Element.classList.add('active');
+        if (gameMode === 'computer') {
+            setTimeout(() => playComputerMove(), 1000); // Add a delay for the computer's move
+        }
     }
 }
 
@@ -111,12 +126,16 @@ function updateGameBoard() {
         handP1Element.appendChild(cardElement);
     });
 
-    // Update Player 2's hand
+    // Update Player 2's hand (hidden if playing against computer)
     const handP2Element = document.getElementById('handP2');
     handP2Element.innerHTML = '';
     handP2.forEach((card, idx) => {
         const cardElement = document.createElement('div');
-        cardElement.innerText = `${card.value} ${card.suit}`;
+        if (gameMode === 'twoPlayer') {
+            cardElement.innerText = `${card.value} ${card.suit}`;
+        } else {
+            cardElement.innerText = 'Hidden';
+        }
         cardElement.addEventListener('click', () => playCard('Player 2', idx, handP2, deckP2, xeriP2, card));
         handP2Element.appendChild(cardElement);
     });
@@ -164,12 +183,12 @@ function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
             xeriCountP2++;
         }
     } else if (TopCard.length > 0 && (chosen_card.value === 'J' || chosen_card.value === TopCard[0].value)) {
-        const collectedCards = deckMid.length + 1;
         deckPlayer.push(...deckMid, chosen_card);
+        let cardsCollected = deckMid.length;
         deckMid = [];
         TopCard = [];
         setTimeout(() => {
-            addMessage(`${player} collects ${collectedCards} cards from the table with ${chosen_card.value} ${chosen_card.suit}`, player === 'Player 1' ? 'red' : 'blue');
+            addMessage(`${player} collects ${cardsCollected} cards from the table with ${chosen_card.value} ${chosen_card.suit}`, player === 'Player 1' ? 'red' : 'blue');
         }, 100);
         lastPlayerToPickUp = player;
     } else {
@@ -188,6 +207,29 @@ function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
             endofgame();
         } else {
             updateGameBoard();
+        }
+    }
+}
+
+function playComputerMove() {
+    const validMoves = [];
+    handP2.forEach((card, idx) => {
+        if (TopCard.length > 0 && (card.value === TopCard[0].value || card.value === 'J')) {
+            validMoves.push({ card, idx });
+        }
+    });
+
+    if (validMoves.length > 0) {
+        const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+        playCard('Xera.i.', move.idx, handP2, deckP2, xeriP2, move.card);
+    } else {
+        const nonJackCards = handP2.filter(card => card.value !== 'J');
+        if (nonJackCards.length > 0 || deckMid.length === 0) {
+            const randomIdx = Math.floor(Math.random() * nonJackCards.length);
+            playCard('Xera.i.', randomIdx, handP2, deckP2, xeriP2, nonJackCards[randomIdx]);
+        } else {
+            const randomIdx = Math.floor(Math.random() * handP2.length);
+            playCard('Xera.i.', randomIdx, handP2, deckP2, xeriP2, handP2[randomIdx]);
         }
     }
 }
@@ -221,18 +263,20 @@ function calculateScore(deck, xeri) {
 }
 
 function endofgame() {
+    isGameEnding = true; // Set the flag to indicate the game is ending
+
     // Add remaining cards on the table to the last player's deck
     if (lastPlayerToPickUp === 'Player 1') {
         deckP1.push(...deckMid);
         deckMid = []; // Clear the table
 
-        // Show alert indicating the player picked up the last cards
+        // Show message indicating the player picked up the last cards
         addMessage("Game Ended so Player 1 picked up the last cards!", 'green');
-    } else if (lastPlayerToPickUp === 'Player 2') {
+    } else if (lastPlayerToPickUp === 'Player 2' || lastPlayerToPickUp === 'Xera.i.') {
         deckP2.push(...deckMid);
         deckMid = []; // Clear the table
 
-        // Show alert indicating the player picked up the last cards
+        // Show message indicating the player picked up the last cards
         addMessage("Game Ended so Player 2 picked up the last cards!", 'green');
     }
 
@@ -247,10 +291,13 @@ function endofgame() {
 
     // Update the 3rd box with all the cards in each player's deck
     const xeriP1Element = document.getElementById('xeriP1');
-    xeriP1Element.innerHTML = deckP1.map(card => `<span class="${getCardColor(card)}">${card.value}${card.suit}</span>`).join(' ');
+    xeriP1Element.innerHTML = deckP1.map(card => `<span class="${getCardStyle(card)}">${card.value}${card.suit}</span>`).join(' ');
 
     const xeriP2Element = document.getElementById('xeriP2');
-    xeriP2Element.innerHTML = deckP2.map(card => `<span class="${getCardColor(card)}">${card.value}${card.suit}</span>`).join(' ');
+    xeriP2Element.innerHTML = deckP2.map(card => `<span class="${getCardStyle(card)}">${card.value}${card.suit}</span>`).join(' ');
+
+    // Update the game board to refresh the counts and clear the table
+    updateGameBoard();
 
     setTimeout(() => {
         addMessage(`Final Scores:<br>Player 1: ${scoreP1} (Ξερή: ${xeriCountP1})<br>Player 2: ${scoreP2} (Ξερή: ${xeriCountP2})`, 'green');
@@ -264,6 +311,14 @@ function endofgame() {
     }, 100);
 }
 
+function getCardStyle(card) {
+    if (['A', 'K', 'Q', 'J', '10'].includes(card.value) || (card.value === '10' && card.suit === '♦') || (card.value === '2' && card.suit === '♣')) {
+        return 'underline'; // Underline the cards with points
+    }
+    return '';
+}
+
+
 function getCardColor(card) {
     if (['A', 'K', 'Q', 'J', '10'].includes(card.value) || (card.value === '10' && card.suit === '♦') || (card.value === '2' && card.suit === '♣')) {
         return 'red';
@@ -272,15 +327,10 @@ function getCardColor(card) {
 }
 
 function addMessage(message, color) {
-    const messageBoard = document.getElementById('messageBoard');
+    const messageBox = document.getElementById('messageBox');
     const messageElement = document.createElement('div');
+    messageElement.className = `message ${color}`;
     messageElement.innerHTML = message;
-    messageElement.style.color = color;
-    messageElement.classList.add('message');
-    messageBoard.appendChild(messageElement);
-}
-
-function clearMessages() {
-    const messageBoard = document.getElementById('messageBoard');
-    messageBoard.innerHTML = '';
+    messageBox.appendChild(messageElement);
+    messageBox.scrollTop = messageBox.scrollHeight;
 }
