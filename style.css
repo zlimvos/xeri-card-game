@@ -14,20 +14,31 @@ h1 {
     display: flex;
     justify-content: space-around;
     margin: 20px auto;
-    width: 80%;
+    width: 90%;
     max-width: 1200px;
 }
 
-#player1, #player2, #mid {
+#player1, #player2, #mid, #messages {
     border: 1px solid #ccc;
     padding: 10px;
-    width: 30%;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.hand, .deck, .xeri, #topCard {
+#player1, #player2 {
+    width: 20%;
+}
+
+#mid {
+    width: 10%; /* Half the width it was before */
+}
+
+#messages {
+    width: 40%; /* The extra width from reducing column 2 */
+}
+
+.hand, .deck, .xeri, #topCard, .messages {
     border: 1px solid #000;
     min-height: 50px;
     margin-top: 10px;
@@ -93,4 +104,41 @@ button:disabled {
 
 #handP2.active {
     pointer-events: auto;
+}
+
+/* Messages styling */
+.messages {
+    height: 400px; /* Adjust the height as needed */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
+
+.message {
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+}
+
+.message p {
+    margin: 0;
+}
+
+.message.player1 {
+    border-left: 5px solid red;
+}
+
+.message.player2 {
+    border-left: 5px solid blue;
+}
+
+.message.system {
+    border-left: 5px solid green;
+}
+
+.red {
+    color: red;
+}
+
+.black {
+    color: black;
 }

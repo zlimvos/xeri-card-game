@@ -19,20 +19,9 @@ function startGame() {
     firstDeal();
     updateGameBoard();
     enableCardClicks();
-    clearPreviousGameInfo();
+    clearMessages(); // Clear messages when starting a new game
+    addMessage("Game started", 'green');
     console.log("Game started");
-}
-
-function clearPreviousGameInfo() {
-    const deckP1Element = document.getElementById('deckP1');
-    const xeriP1Element = document.getElementById('xeriP1');
-    const deckP2Element = document.getElementById('deckP2');
-    const xeriP2Element = document.getElementById('xeriP2');
-
-    deckP1Element.innerHTML = '';
-    xeriP1Element.innerHTML = '';
-    deckP2Element.innerHTML = '';
-    xeriP2Element.innerHTML = '';
 }
 
 function initializeGame() {
@@ -46,7 +35,10 @@ function initializeGame() {
     TopCard = [];
     xeriP1 = [];
     xeriP2 = [];
+    xeriCountP1 = 0;
+    xeriCountP2 = 0;
     currentPlayer = 'Player 1';
+    lastPlayerToPickUp = null;
     console.log("Game initialized");
     console.log(deck);
 }
@@ -158,10 +150,9 @@ function updateDeckCounts() {
     deckP2Element.innerHTML = `Deck: ${deckP2.length} cards<br>Ξερή: ${xeriCountP2}`;
 }
 
-
 function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
     if (deckMid.length === 1 && TopCard.length > 0 && (chosen_card.value === TopCard[0].value)) {
-        alert(`${player} made a Ξερή with ${chosen_card.value} ${chosen_card.suit}`);
+        addMessage(`${player} made a Ξερή with ${chosen_card.value} ${chosen_card.suit}`, player === 'Player 1' ? 'red' : 'blue');
         xeri.push(chosen_card);
         deckPlayer.push(...deckMid, chosen_card);
         deckMid = [];
@@ -177,7 +168,7 @@ function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
         deckMid = [];
         TopCard = [];
         setTimeout(() => {
-            alert(`${player} collects all cards from the table with ${chosen_card.value} ${chosen_card.suit}!`);
+            addMessage(`${player} collects all cards from the table with ${chosen_card.value} ${chosen_card.suit}!`, player === 'Player 1' ? 'red' : 'blue');
         }, 100);
         lastPlayerToPickUp = player;
     } else {
@@ -207,21 +198,17 @@ function switchPlayer() {
 
 function calculateScore(deck, xeri) {
     let score = 0;
-    // 1 point for each face card (A, K, Q, J, 10)
     deck.forEach(card => {
         if (['A', 'K', 'Q', 'J', '10'].includes(card.value)) {
             score += 1;
         }
     });
-    // 1 extra point for the 10 of Diamonds
     if (deck.some(card => card.value === '10' && card.suit === '♦')) {
         score += 1;
     }
-    // 1 extra point for the 2 of Clubs
     if (deck.some(card => card.value === '2' && card.suit === '♣')) {
         score += 1;
     }
-    // 10 points for each Ξερή, 20 points for each Ξερή with a Jack
     xeri.forEach(card => {
         if (card.value === 'J') {
             score += 20;
@@ -232,29 +219,20 @@ function calculateScore(deck, xeri) {
     return score;
 }
 
-function formatDeck(deck) {
-    return deck.map(card => {
-        const color = (card.value === '10' && card.suit === '♦') || (card.value === '2' && card.suit === '♣') || ['A', 'K', 'Q', 'J', '10'].includes(card.value) ? 'red' : 'black';
-        return `<span style="color: ${color}">${card.value}${card.suit}</span>`;
-    }).join(' ');
-}
-
 function endofgame() {
-    isGameEnding = true; // Set the flag to indicate the game is ending
-
     // Add remaining cards on the table to the last player's deck
     if (lastPlayerToPickUp === 'Player 1') {
         deckP1.push(...deckMid);
         deckMid = []; // Clear the table
 
         // Show alert indicating the player picked up the last cards
-        alert("Game Ended so Player 1 picked up the last cards!");
+        addMessage("Game Ended so Player 1 picked up the last cards!", 'green');
     } else if (lastPlayerToPickUp === 'Player 2') {
         deckP2.push(...deckMid);
         deckMid = []; // Clear the table
 
         // Show alert indicating the player picked up the last cards
-        alert("Game Ended so Player 2 picked up the last cards!");
+        addMessage("Game Ended so Player 2 picked up the last cards!", 'green');
     }
 
     let scoreP1 = calculateScore(deckP1, xeriP1);
@@ -268,19 +246,40 @@ function endofgame() {
 
     // Update the 3rd box with all the cards in each player's deck
     const xeriP1Element = document.getElementById('xeriP1');
-    xeriP1Element.innerHTML = formatDeck(deckP1);
+    xeriP1Element.innerHTML = deckP1.map(card => `<span class="${getCardColor(card)}">${card.value}${card.suit}</span>`).join(' ');
 
     const xeriP2Element = document.getElementById('xeriP2');
-    xeriP2Element.innerHTML = formatDeck(deckP2);
+    xeriP2Element.innerHTML = deckP2.map(card => `<span class="${getCardColor(card)}">${card.value}${card.suit}</span>`).join(' ');
 
     setTimeout(() => {
-        alert(`Final Scores:\nPlayer 1: ${scoreP1} (Ξερή: ${xeriCountP1})\nPlayer 2: ${scoreP2} (Ξερή: ${xeriCountP2})`);
+        addMessage(`Final Scores:<br>Player 1: ${scoreP1} (Ξερή: ${xeriCountP1})<br>Player 2: ${scoreP2} (Ξερή: ${xeriCountP2})`, 'green');
         if (scoreP1 > scoreP2) {
-            alert("Player 1 wins!");
+            addMessage("Player 1 wins!", 'red');
         } else if (scoreP2 > scoreP1) {
-            alert("Player 2 wins!");
+            addMessage("Player 2 wins!", 'blue');
         } else {
-            alert("It's a tie!");
+            addMessage("It's a tie!", 'green');
         }
-    }, 100); // Small delay to ensure the final alerts show after the board updates
+    }, 100);
+}
+
+function getCardColor(card) {
+    if (['A', 'K', 'Q', 'J', '10'].includes(card.value) || (card.value === '10' && card.suit === '♦') || (card.value === '2' && card.suit === '♣')) {
+        return 'red';
+    }
+    return 'black';
+}
+
+function addMessage(message, color) {
+    const messageBoard = document.getElementById('messageBoard');
+    const messageElement = document.createElement('div');
+    messageElement.innerHTML = message;
+    messageElement.style.color = color;
+    messageElement.classList.add('message');
+    messageBoard.appendChild(messageElement);
+}
+
+function clearMessages() {
+    const messageBoard = document.getElementById('messageBoard');
+    messageBoard.innerHTML = '';
 }
