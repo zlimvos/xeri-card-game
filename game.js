@@ -164,11 +164,12 @@ function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
             xeriCountP2++;
         }
     } else if (TopCard.length > 0 && (chosen_card.value === 'J' || chosen_card.value === TopCard[0].value)) {
+        const collectedCards = deckMid.length + 1;
         deckPlayer.push(...deckMid, chosen_card);
         deckMid = [];
         TopCard = [];
         setTimeout(() => {
-            addMessage(`${player} collects all cards from the table with ${chosen_card.value} ${chosen_card.suit}!`, player === 'Player 1' ? 'red' : 'blue');
+            addMessage(`${player} collects ${collectedCards} cards from the table with ${chosen_card.value} ${chosen_card.suit}`, player === 'Player 1' ? 'red' : 'blue');
         }, 100);
         lastPlayerToPickUp = player;
     } else {
