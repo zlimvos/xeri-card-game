@@ -1,6 +1,12 @@
-document.getElementById('startGame').addEventListener('click', startGame);
-document.getElementById('twoPlayerMode').addEventListener('click', () => setGameMode('twoPlayer'));
-document.getElementById('computerMode').addEventListener('click', () => setGameMode('computer'));
+document.getElementById('twoPlayerMode').addEventListener('click', () => {
+    setGameMode('twoPlayer');
+    startGame(); // Start the game immediately after setting the game mode
+});
+document.getElementById('computerMode').addEventListener('click', () => {
+    setGameMode('computer');
+    startGame(); // Start the game immediately after setting the game mode
+});
+
 
 let handP1 = [];
 let handP2 = [];
@@ -20,11 +26,11 @@ let gameMode = 'twoPlayer';
 function setGameMode(mode) {
     gameMode = mode;
     document.getElementById('game-mode').style.display = 'none';
-    document.getElementById('startGame').style.display = 'block';
     if (mode === 'computer') {
         document.getElementById('player2Title').innerText = 'Xera.i.';
     }
 }
+
 
 function startGame() {
     initializeGame();
@@ -32,9 +38,9 @@ function startGame() {
     updateGameBoard();
     enableCardClicks();
     document.getElementById('game-board').style.display = 'flex';
-    document.getElementById('startGame').style.display = 'none';
     console.log("Game started");
 }
+
 
 function initializeGame() {
     deck = createDeck();
@@ -65,6 +71,7 @@ function enableCardClicks() {
         handP1Element.classList.remove('active');
         handP2Element.classList.add('active');
         if (gameMode === 'computer') {
+            handP2Element.classList.remove('active'); // Ensure computer's hand is never active
             setTimeout(() => playComputerMove(), 1000); // Add a delay for the computer's move
         }
     }
@@ -133,10 +140,11 @@ function updateGameBoard() {
         const cardElement = document.createElement('div');
         if (gameMode === 'twoPlayer') {
             cardElement.innerText = `${card.value} ${card.suit}`;
+            cardElement.addEventListener('click', () => playCard('Player 2', idx, handP2, deckP2, xeriP2, card));
         } else {
             cardElement.innerText = 'Hidden';
+            // No click event listener added for computer mode
         }
-        cardElement.addEventListener('click', () => playCard('Player 2', idx, handP2, deckP2, xeriP2, card));
         handP2Element.appendChild(cardElement);
     });
 
