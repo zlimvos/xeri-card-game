@@ -8,11 +8,13 @@
 </head>
 <body>
     <h1>Xeri Card Game</h1>
+    
     <div id="game-mode">
-        <button id="twoPlayerMode">Two Players</button>
-        <button id="computerMode">Play Against Xera.i.</button>
+        <button id="twoPlayerMode">Two Player Mode</button>
+        <button id="computerMode">Play Against Computer</button>
     </div>
-    <div id="game-board" style="display:none;">
+
+    <div id="game-board" style="display: none;">
         <div id="player1">
             <h2>Player 1</h2>
             <div id="handP1" class="hand"></div>
@@ -22,7 +24,6 @@
         <div id="mid">
             <h2>Table</h2>
             <div id="deckMid" class="deck"></div>
-            <div id="topCard"></div>
         </div>
         <div id="player2">
             <h2 id="player2Title">Player 2</h2>
@@ -35,7 +36,9 @@
             <div id="messageBox" class="messages"></div>
         </div>
     </div>
-    <button id="startGame" style="display:none;">Start Game</button>
+    
+    <button id="startGame" style="display: none;">Start Game</button>
+
     <script src="game.js"></script>
 </body>
 </html>

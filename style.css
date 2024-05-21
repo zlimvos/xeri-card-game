@@ -61,6 +61,11 @@ button:hover {
     background-color: #45a049;
 }
 
+#deckMid span {
+    display: inline-block;
+    margin-right: 5px;
+}
+
 button:disabled {
     background-color: #ccc;
     cursor: not-allowed;

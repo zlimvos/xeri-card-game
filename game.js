@@ -143,15 +143,16 @@ function updateGameBoard() {
     // Update the mid deck
     const deckMidElement = document.getElementById('deckMid');
     deckMidElement.innerHTML = '';
-    deckMid.forEach(card => {
+    deckMid.forEach((card, idx) => {
         const cardElement = document.createElement('div');
+        if (idx === deckMid.length - 1) {
+            const topCardText = document.createElement('span');
+            topCardText.innerHTML = '<strong>Top card:</strong> ';
+            deckMidElement.appendChild(topCardText);
+        }
         cardElement.innerText = `${card.value} ${card.suit}`;
         deckMidElement.appendChild(cardElement);
     });
-
-    // Update the top card
-    const topCardElement = document.getElementById('topCard');
-    topCardElement.innerHTML = TopCard.length > 0 ? `${TopCard[0].value} ${TopCard[0].suit}` : '';
 
     // Update deck counts
     updateDeckCounts();
@@ -213,26 +214,33 @@ function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
 
 function playComputerMove() {
     const validMoves = [];
+    let xeriMove = null;
+
     handP2.forEach((card, idx) => {
-        if (TopCard.length > 0 && (card.value === TopCard[0].value || card.value === 'J')) {
-            validMoves.push({ card, idx });
+        if (TopCard.length > 0) {
+            if (card.value === TopCard[0].value) {
+                xeriMove = { card, idx };
+            }
+            if (card.value === 'J') {
+                validMoves.push({ card, idx });
+            }
         }
     });
 
-    if (validMoves.length > 0) {
+    if (xeriMove) {
+        // If a Ξερή move is possible, prioritize it
+        playCard('Xera.i.', xeriMove.idx, handP2, deckP2, xeriP2, xeriMove.card);
+    } else if (validMoves.length > 0) {
+        // If no Ξερή move is possible, use a Jack if available
         const move = validMoves[Math.floor(Math.random() * validMoves.length)];
         playCard('Xera.i.', move.idx, handP2, deckP2, xeriP2, move.card);
     } else {
-        const nonJackCards = handP2.filter(card => card.value !== 'J');
-        if (nonJackCards.length > 0 || deckMid.length === 0) {
-            const randomIdx = Math.floor(Math.random() * nonJackCards.length);
-            playCard('Xera.i.', randomIdx, handP2, deckP2, xeriP2, nonJackCards[randomIdx]);
-        } else {
-            const randomIdx = Math.floor(Math.random() * handP2.length);
-            playCard('Xera.i.', randomIdx, handP2, deckP2, xeriP2, handP2[randomIdx]);
-        }
+        // Otherwise, play a random card
+        const randomIdx = Math.floor(Math.random() * handP2.length);
+        playCard('Xera.i.', randomIdx, handP2, deckP2, xeriP2, handP2[randomIdx]);
     }
 }
+
 
 function switchPlayer() {
     currentPlayer = currentPlayer === 'Player 1' ? 'Player 2' : 'Player 1';
