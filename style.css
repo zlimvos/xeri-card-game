@@ -3,6 +3,7 @@
 :root {
     --spread: 80deg;
     --spacing: 12%;
+    --table-card-spacing: 30px; /* Add this variable for table card spacing */
 }
 
 /* General styles */
@@ -21,11 +22,11 @@ h1 {
 
 #game-board {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
     margin: 20px auto;
     width: 80%;
     max-width: 1200px;
-    flex-wrap: wrap;
 }
 
 /* Column styles */
@@ -33,7 +34,7 @@ h1 {
 .column {
     border: 1px solid #ccc;
     padding: 10px;
-    width: 22%;
+    width: 30%; /* Width for Player 1 and Player 2 columns */
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -44,7 +45,21 @@ h1 {
 }
 
 #mid {
-    width: 30%;
+    width: 20%; /* Adjusted width to make the column thinner */
+}
+
+/* Game Messages styles */
+#messageBox {
+    width: 100%; /* Full width of the display */
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 100px;
+    margin-top: 20px;
+    overflow-y: scroll;
+    text-align: left;
 }
 
 /* Hand, deck, and xeri styles */
@@ -102,31 +117,6 @@ button:hover {
     pointer-events: auto;
 }
 
-.messages {
-    height: 200px;
-    overflow-y: scroll;
-    text-align: left;
-    width: 100%;
-    margin-top: 20px;
-}
-
-.message {
-    padding: 5px;
-    margin: 5px 0;
-}
-
-.message.red {
-    color: red;
-}
-
-.message.blue {
-    color: blue;
-}
-
-.message.green {
-    color: green;
-}
-
 /* Fanned hand styles */
 
 .hand.fanned {
@@ -176,4 +166,32 @@ button:hover {
 .hand.fanned .card {
     transform: rotate(calc(var(--spread) * (var(--i) - 2.5)));
     left: calc(var(--spacing) * var(--i));
+}
+
+/* Stack the cards in the middle box with a slight overlap */
+.deck.playingCards {
+    position: relative;
+    height: auto; /* Adjust this if needed */
+}
+
+.deck.playingCards .card {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, calc(var(--i) * var(--table-card-spacing))); /* Use the variable for spacing */
+}
+
+/* Add this to ensure card images are shown correctly */
+.deck .card {
+    position: absolute;
+    width: 3.3em;
+    height: 4.6em;
+}
+
+/* Ensure the deckMid class has a defined height to accommodate stacked cards */
+#deckMid {
+    position: relative;
+    height: 20em; /* Adjust as needed */
+    margin: 0 auto;
+    width: 80%;
 }

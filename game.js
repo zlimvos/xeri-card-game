@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
             cardElement.addEventListener('click', () => playCard('Player 1', idx, handP1, deckP1, xeriP1, card));
             handP1Element.appendChild(cardElement);
+            console.log(`Player 1 card: ${card.value} of ${card.suit}`);
         });
     
         // Update Player 2's hand (hidden if playing against computer)
@@ -141,8 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
                 cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
                 cardElement.addEventListener('click', () => playCard('Player 2', idx, handP2, deckP2, xeriP2, card));
+                console.log(`Player 2 card: ${card.value} of ${card.suit}`);
             } else {
                 cardElement.className = `card back`;
+                console.log("Player 2 card: hidden");
             }
             handP2Element.appendChild(cardElement);
         });
@@ -153,23 +156,19 @@ document.addEventListener('DOMContentLoaded', () => {
         deckMid.forEach((card, idx) => {
             const suitClass = card.suit === '♦' ? 'diams' : card.suit;
             const cardElement = document.createElement('div');
-            if (idx === deckMid.length - 1) {
-                const topCardText = document.createElement('span');
-                topCardText.innerHTML = '<strong>Top card:</strong> ';
-                deckMidElement.appendChild(topCardText);
-            }
             cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
             cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
+            cardElement.style.setProperty('--i', idx); // Ensure the --i variable is set for each card
             deckMidElement.appendChild(cardElement);
+            console.log(`Table card: ${card.value} of ${card.suit}`);
         });
     
         // Update deck counts
         updateDeckCounts();
     
         console.log("Game board updated");
-    }
-    
-    
+    }    
+
     function getSuitSymbol(suit) {
         switch (suit) {
             case '♠':
@@ -184,17 +183,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return '';
         }
     }
-    
+
     function updateDeckCounts() {
         console.log("Updating deck counts...");
         // Update Player 1's deck count and Xeri count
         const deckP1Element = document.getElementById('deckP1');
         deckP1Element.innerHTML = `Deck: ${deckP1.length} cards<br>Ξερή: ${xeriCountP1}`;
-    
+        
         // Update Player 2's deck count and Xeri count
         const deckP2Element = document.getElementById('deckP2');
         deckP2Element.innerHTML = `Deck: ${deckP2.length} cards<br>Ξερή: ${xeriCountP2}`;
-    
+        
         console.log("Deck counts updated");
     }
 
