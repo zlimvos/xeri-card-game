@@ -1,3 +1,12 @@
+@import url('css/cards.css'); /* Ensure this path is correct */
+
+:root {
+    --spread: 80deg;
+    --spacing: 12%;
+}
+
+/* General styles */
+
 body {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -16,32 +25,45 @@ h1 {
     margin: 20px auto;
     width: 80%;
     max-width: 1200px;
+    flex-wrap: wrap;
 }
 
-#player1, #player2, #mid, #messages {
+/* Column styles */
+
+.column {
     border: 1px solid #ccc;
     padding: 10px;
     width: 22%;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #mid {
-    width: 11%;
+    width: 30%;
 }
 
-.hand, .deck, .xeri, #topCard {
+/* Hand, deck, and xeri styles */
+
+.hand, .deck, .xeri {
     border: 1px solid #000;
     min-height: 50px;
     margin-top: 10px;
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
-.hand div, .deck div, #topCard div {
-    margin: 5px 0;
+.hand div, .deck div, .xeri div {
+    margin: 5px;
 }
 
 button {
@@ -61,53 +83,31 @@ button:hover {
     background-color: #45a049;
 }
 
-#deckMid span {
-    display: inline-block;
-    margin-right: 5px;
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
 .hand div {
-    cursor: pointer;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    background-color: #fff;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.hand div:hover {
-    background-color: #e0e0e0;
-    transform: scale(1.05);
+    display: inline-block;
+    margin: 0 5px;
 }
 
 #handP1 {
     border: 2px solid red;
-    pointer-events: none; /* Disable clicks by default */
+    pointer-events: none;
 }
 
 #handP2 {
     border: 2px solid blue;
-    pointer-events: none; /* Disable clicks by default */
+    pointer-events: none;
 }
 
-/* Highlight the current player's hand */
-#handP1.active {
-    pointer-events: auto;
-}
-
-#handP2.active {
+#handP1.active, #handP2.active {
     pointer-events: auto;
 }
 
 .messages {
-    height: 400px;
+    height: 200px;
     overflow-y: scroll;
     text-align: left;
+    width: 100%;
+    margin-top: 20px;
 }
 
 .message {
@@ -126,6 +126,54 @@ button:disabled {
 .message.green {
     color: green;
 }
-.underline {
-    text-decoration: underline;
+
+/* Fanned hand styles */
+
+.hand.fanned {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 8em;
+}
+
+.hand.fanned .card {
+    position: absolute;
+    transition: transform 0.3s ease;
+}
+
+.hand.fanned .card:nth-child(1) {
+    transform: rotate(calc(-1 * var(--spread))) translateX(calc(-3 * var(--spacing)));
+}
+
+.hand.fanned .card:nth-child(2) {
+    transform: rotate(calc(-0.6 * var(--spread))) translateX(calc(-2 * var(--spacing)));
+}
+
+.hand.fanned .card:nth-child(3) {
+    transform: rotate(calc(-0.2 * var(--spread))) translateX(calc(-1 * var(--spacing)));
+}
+
+.hand.fanned .card:nth-child(4) {
+    transform: rotate(calc(0.2 * var(--spread))) translateX(calc(0 * var(--spacing)));
+}
+
+.hand.fanned .card:nth-child(5) {
+    transform: rotate(calc(0.6 * var(--spread))) translateX(calc(1 * var(--spacing)));
+}
+
+.hand.fanned .card:nth-child(6) {
+    transform: rotate(calc(1 * var(--spread))) translateX(calc(2 * var(--spacing)));
+}
+
+.hand.fanned .card:nth-child(1) { z-index: 6; }
+.hand.fanned .card:nth-child(2) { z-index: 5; }
+.hand.fanned .card:nth-child(3) { z-index: 4; }
+.hand.fanned .card:nth-child(4) { z-index: 3; }
+.hand.fanned .card:nth-child(5) { z-index: 2; }
+.hand.fanned .card:nth-child(6) { z-index: 1; }
+
+.hand.fanned .card {
+    transform: rotate(calc(var(--spread) * (var(--i) - 2.5)));
+    left: calc(var(--spacing) * var(--i));
 }

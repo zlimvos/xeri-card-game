@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xeri Card Game</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/cards.css">
 </head>
 <body>
     <h1>Xeri Card Game</h1>
@@ -15,23 +16,23 @@
     </div>
 
     <div id="game-board" style="display: none;">
-        <div id="player1">
+        <div class="column">
             <h2>Player 1</h2>
-            <div id="handP1" class="hand"></div>
+            <div id="handP1" class="hand playingCards"></div> <!-- Updated -->
             <div id="deckP1" class="deck"></div>
             <div id="xeriP1" class="xeri"></div>
         </div>
-        <div id="mid">
+        <div class="column" id="mid">
             <h2>Table</h2>
             <div id="deckMid" class="deck"></div>
         </div>
-        <div id="player2">
+        <div class="column">
             <h2 id="player2Title">Player 2</h2>
-            <div id="handP2" class="hand"></div>
+            <div id="handP2" class="hand playingCards"></div> <!-- Updated -->
             <div id="deckP2" class="deck"></div>
             <div id="xeriP2" class="xeri"></div>
         </div>
-        <div id="messages">
+        <div class="column">
             <h2>Game Messages</h2>
             <div id="messageBox" class="messages"></div>
         </div>
