@@ -1,4 +1,5 @@
 @import url('css/cards.css'); /* Ensure this path is correct */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap'); /* Import Roboto font */
 
 :root {
     --spread: 80deg;
@@ -18,6 +19,16 @@ body {
 
 h1 {
     margin-bottom: 20px;
+}
+
+h2 {
+    font-family: 'Roboto', sans-serif; /* Use the new font */
+    font-size: 1.5em;
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(90deg, rgba(255,0,150,1) 0%, rgba(0,204,255,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 #game-board {
@@ -58,9 +69,20 @@ h1 {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     min-height: 100px;
     margin-top: 20px;
-    overflow-y: scroll;
+    overflow-y: auto; /* Use auto instead of scroll for better behavior */
     text-align: left;
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Stack children vertically */
+    align-items: flex-start; /* Align items to the top */
 }
+
+#messageBoxContent {
+    font-family: monospace; /* Use monospace font for messages */
+    font-size: 0.85em; /* Make the font size a bit smaller */
+    white-space: pre-wrap; /* Preserve whitespace for better formatting */
+    width: 100%; /* Ensure full width */
+}
+
 
 /* Hand, deck, and xeri styles */
 
@@ -193,5 +215,5 @@ button:hover {
     position: relative;
     height: 20em; /* Adjust as needed */
     margin: 0 auto;
-    width: 80%;
+    width: 80%; /* Adjust this percentage to make the table box thinner */
 }
