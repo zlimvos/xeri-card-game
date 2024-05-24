@@ -158,8 +158,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const cardElement = document.createElement('div');
             cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
             cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-            // cardElement.style.setProperty('--i', `${deckMid.length - idx}`); // Adjust the position of each card within the grid
-            cardElement.style.setProperty('--i', `${idx}`); // Adjust the position of each card within the grid to place lower
+            //---1----
+            //cardElement.style.setProperty('--i', `${idx}`); // Adjust the position of each card within the grid to place lower
+            //---1----
+            const stackNumber = Math.floor(idx / 10); // Calculate which stack the card belongs to
+            const positionInStack = idx % 10; // Position within the stack
+            cardElement.style.setProperty('--i', `${positionInStack}`); // Set position in the stack
+            cardElement.style.setProperty('--stack', `${stackNumber}`); // Set stack number for horizontal offset
+            //-------
             deckMidElement.appendChild(cardElement);
             console.log(`Table card: ${card.value} of ${card.suit}`);
         });

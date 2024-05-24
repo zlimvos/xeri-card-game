@@ -201,6 +201,7 @@ button:hover {
     top: 0;
     left: 50%;
     transform: translate(-50%, calc(var(--i) * var(--table-card-spacing))); /* Use the variable for spacing */
+    /* transform: translate(calc(-50% + var(--row) * 30%), calc(var(--i) * var(--table-card-spacing))); /* Adjust the position to handle two rows */
 }
 
 /* Add this to ensure card images are shown correctly */
@@ -225,7 +226,9 @@ button:hover {
     width: 3.3em;
     height: 4.6em;
     position: absolute;
-    left: 30%;
+
+    /* left: 30%; */
+    left: calc(30% + (var(--stack) * 2em)); /* Adjust the position based on stack number */
 }
 
 #deckMid .column {
