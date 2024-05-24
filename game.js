@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateGameBoard() {
         console.log("Updating game board...");
-    
+        
         // Update Player 1's hand
         const handP1Element = document.getElementById('handP1');
         handP1Element.classList.add('fanned'); // Add the fanned class
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             handP1Element.appendChild(cardElement);
             console.log(`Player 1 card: ${card.value} of ${card.suit}`);
         });
-    
+        
         // Update Player 2's hand (hidden if playing against computer)
         const handP2Element = document.getElementById('handP2');
         handP2Element.classList.add('fanned'); // Add the fanned class
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             handP2Element.appendChild(cardElement);
         });
-    
+        
         // Update the mid deck
         const deckMidElement = document.getElementById('deckMid');
         deckMidElement.innerHTML = '';
@@ -158,17 +158,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const cardElement = document.createElement('div');
             cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
             cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-            cardElement.style.setProperty('--i', idx); // Ensure the --i variable is set for each card
+            // cardElement.style.setProperty('--i', `${deckMid.length - idx}`); // Adjust the position of each card within the grid
+            cardElement.style.setProperty('--i', `${idx}`); // Adjust the position of each card within the grid to place lower
             deckMidElement.appendChild(cardElement);
             console.log(`Table card: ${card.value} of ${card.suit}`);
         });
-    
+        
         // Update deck counts
         updateDeckCounts();
-    
+        
         console.log("Game board updated");
-    }    
-
+    }
+    
+    
     function getSuitSymbol(suit) {
         switch (suit) {
             case '♠':
