@@ -205,9 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Deck counts updated");
     }
 
+    // Example usage in your existing functions
     function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
         if (deckMid.length === 1 && TopCard.length > 0 && (chosen_card.value === TopCard[0].value)) {
-            addMessage(`${player} made a Ξερή with ${chosen_card.value} ${chosen_card.suit}`, player === 'Player 1' ? 'red' : 'blue');
+            addMessage(`${player} made a Ξερή with ${chosen_card.value} ${chosen_card.suit}`, player);
             xeri.push(chosen_card);
             deckPlayer.push(...deckMid, chosen_card);
             deckMid = [];
@@ -224,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             deckMid = [];
             TopCard = [];
             setTimeout(() => {
-                addMessage(`${player} collects ${cardsCollected} cards from the table with ${chosen_card.value} ${chosen_card.suit}`, player === 'Player 1' ? 'red' : 'blue');
+                addMessage(`${player} collects ${cardsCollected} cards from the table with ${chosen_card.value} ${chosen_card.suit}`, player);
             }, 100);
             lastPlayerToPickUp = player;
         } else {
@@ -352,14 +353,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return '';
     }
 
-    function addMessage(message, color) {
-        const messageBox = document.getElementById('messageBox');
-        const messageElement = document.createElement('div');
-        messageElement.className = `message ${color}`;
-        messageElement.innerHTML = message;
-        messageBox.appendChild(messageElement);
-        messageBox.scrollTop = messageBox.scrollHeight;
+    function addMessage(message, player) {
+    const messageBox = document.getElementById('messageBoxContent');
+    const messageElement = document.createElement('div');
+    
+    // Create a span for the player name with the appropriate color
+    const playerSpan = document.createElement('span');
+    playerSpan.style.color = player === 'Player 1' ? 'darkred' : 'darkblue';
+    playerSpan.textContent = player;
+    
+    // Create a text node for the rest of the message
+    const messageText = document.createElement('span');
+    messageText.innerHTML = message.replace(player, '');
+
+    
+    // Append the player span and the rest of the message to the message element
+    messageElement.appendChild(playerSpan);
+    messageElement.appendChild(messageText);
+    
+    messageBox.appendChild(messageElement);
+    messageBox.scrollTop = messageBox.scrollHeight;
     }
+
 
     function setCardStyles(spread, spacing) {
         document.documentElement.style.setProperty('--spread', `${spread}deg`);

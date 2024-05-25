@@ -18,24 +18,33 @@ body {
 }
 
 h1 {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 h2 {
     font-family: 'Roboto', sans-serif; /* Use the new font */
-    font-size: 1.5em;
-    color: #333;
+    font-size: 1em;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(90deg, rgba(255,0,150,1) 0%, rgba(0,204,255,1) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+}
+
+/* Specific colors for each header */
+.column:nth-child(1) h2 {
+    color: darkred; /* Color for Player 1 */
+}
+
+#mid h2 {
+    color: darkgreen; /* Color for Table */
+}
+
+.column:nth-child(3) h2 {
+    color: darkblue; /* Color for Player 2 */
 }
 
 #game-board {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    margin: 20px auto;
+    margin: 10px auto;
     width: 80%;
     max-width: 1200px;
 }
@@ -76,11 +85,15 @@ h2 {
     align-items: flex-start; /* Align items to the top */
 }
 
-#messageBoxContent {
-    font-family: monospace; /* Use monospace font for messages */
-    font-size: 0.85em; /* Make the font size a bit smaller */
+#messageBox #messageBoxContent {
+    font-family: Consolas, "Courier New", monospace; /* Use monospaced font */
+    font-size: 0.70em; /* Make the font size a bit smaller */
     white-space: pre-wrap; /* Preserve whitespace for better formatting */
     width: 100%; /* Ensure full width */
+    color: #000; /* Text color */
+    background-color: #f0f0f0; /* Background color */
+    padding: 2px 4px; /* Padding for spacing */
+    border-left: 3px solid #ccc; /* Left border */
 }
 
 
@@ -126,7 +139,7 @@ button:hover {
 }
 
 #handP1 {
-    border: 2px solid red;
+    border: 1px solid red;
     pointer-events: none;
 }
 
