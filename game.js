@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateGameBoard() {
         console.log("Updating game board...");
-        
+    
         // Update Player 1's hand
         const handP1Element = document.getElementById('handP1');
         handP1Element.classList.add('fanned'); // Add the fanned class
@@ -125,13 +125,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const suitClass = card.suit === '♦' ? 'diams' : card.suit === '♥' ? 'hearts' : card.suit === '♠' ? 'spades' : 'clubs';
             const cardElement = document.createElement('div');
             cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
-//          cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-            cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span><span class="rank bottom-right">${card.value}</span>`;
+            cardElement.innerHTML = `
+                <span class="rank">${card.value}</span>
+                <span class="suit">${getSuitSymbol(card.suit)}</span>
+                <span class="rank bottom-right">${card.value}</span>
+                <span class="suit bottom-right-suit">${getSuitSymbol(card.suit)}</span>
+            `;
             cardElement.addEventListener('click', () => playCard('Player 1', idx, handP1, deckP1, xeriP1, card));
             handP1Element.appendChild(cardElement);
             console.log(`Player 1 card: ${card.value} of ${card.suit}`);
         });
-        
+    
         // Update Player 2's hand (hidden if playing against computer)
         const handP2Element = document.getElementById('handP2');
         handP2Element.classList.add('fanned'); // Add the fanned class
@@ -141,8 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const cardElement = document.createElement('div');
             if (gameMode === 'twoPlayer') {
                 cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
-//                cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-                cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span><span class="rank bottom-right">${card.value}</span>`;
+                cardElement.innerHTML = `
+                    <span class="rank">${card.value}</span>
+                    <span class="suit">${getSuitSymbol(card.suit)}</span>
+                    <span class="rank bottom-right">${card.value}</span>
+                    <span class="suit bottom-right-suit">${getSuitSymbol(card.suit)}</span>
+                `;
                 cardElement.addEventListener('click', () => playCard('Player 2', idx, handP2, deckP2, xeriP2, card));
                 console.log(`Player 2 card: ${card.value} of ${card.suit}`);
             } else {
@@ -151,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             handP2Element.appendChild(cardElement);
         });
-        
+    
         // Update the mid deck
         const deckMidElement = document.getElementById('deckMid');
         deckMidElement.innerHTML = '';
@@ -159,9 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const suitClass = card.suit === '♦' ? 'diams' : card.suit === '♥' ? 'hearts' : card.suit === '♠' ? 'spades' : 'clubs';
             const cardElement = document.createElement('div');
             cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
-//            cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-            cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span><span class="rank bottom-right">${card.value}</span>`;
-            // Adjust the position of each card within the grid to place lower
+            cardElement.innerHTML = `
+                <span class="rank">${card.value}</span>
+                <span class="suit">${getSuitSymbol(card.suit)}</span>
+                <span class="rank bottom-right">${card.value}</span>
+                <span class="suit bottom-right-suit">${getSuitSymbol(card.suit)}</span>
+            `;
             const stackNumber = Math.floor(idx / 10); // Calculate which stack the card belongs to
             const positionInStack = idx % 10; // Position within the stack
             cardElement.style.setProperty('--i', `${positionInStack}`); // Set position in the stack
@@ -169,12 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
             deckMidElement.appendChild(cardElement);
             console.log(`Table card: ${card.value} of ${card.suit}`);
         });
-        
+    
         // Update deck counts
         updateDeckCounts();
-        
+    
         console.log("Game board updated");
-    }  
+    }
     
     function getSuitSymbol(suit) {
         switch (suit) {
