@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handP1Element.classList.add('fanned'); // Add the fanned class
         handP1Element.innerHTML = '';
         handP1.forEach((card, idx) => {
-            const suitClass = card.suit === '♦' ? 'diams' : card.suit;
+            const suitClass = card.suit === '♦' ? 'diams' : card.suit === '♥' ? 'hearts' : card.suit === '♠' ? 'spades' : 'clubs';
             const cardElement = document.createElement('div');
             cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
             cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handP2Element.classList.add('fanned'); // Add the fanned class
         handP2Element.innerHTML = '';
         handP2.forEach((card, idx) => {
-            const suitClass = card.suit === '♦' ? 'diams' : card.suit;
+            const suitClass = card.suit === '♦' ? 'diams' : card.suit === '♥' ? 'hearts' : card.suit === '♠' ? 'spades' : 'clubs';
             const cardElement = document.createElement('div');
             if (gameMode === 'twoPlayer') {
                 cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
@@ -154,18 +154,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const deckMidElement = document.getElementById('deckMid');
         deckMidElement.innerHTML = '';
         deckMid.forEach((card, idx) => {
-            const suitClass = card.suit === '♦' ? 'diams' : card.suit;
+            const suitClass = card.suit === '♦' ? 'diams' : card.suit === '♥' ? 'hearts' : card.suit === '♠' ? 'spades' : 'clubs';
             const cardElement = document.createElement('div');
             cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
             cardElement.innerHTML = `<span class="rank">${card.value}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-            //---1----
-            //cardElement.style.setProperty('--i', `${idx}`); // Adjust the position of each card within the grid to place lower
-            //---1----
+            // Adjust the position of each card within the grid to place lower
             const stackNumber = Math.floor(idx / 10); // Calculate which stack the card belongs to
             const positionInStack = idx % 10; // Position within the stack
             cardElement.style.setProperty('--i', `${positionInStack}`); // Set position in the stack
             cardElement.style.setProperty('--stack', `${stackNumber}`); // Set stack number for horizontal offset
-            //-------
             deckMidElement.appendChild(cardElement);
             console.log(`Table card: ${card.value} of ${card.suit}`);
         });
@@ -174,8 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDeckCounts();
         
         console.log("Game board updated");
-    }
-    
+    }  
     
     function getSuitSymbol(suit) {
         switch (suit) {
