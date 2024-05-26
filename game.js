@@ -116,10 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateGameBoard() {
         console.log("Updating game board...");
-    
+
         // Update Player 1's hand
         const handP1Element = document.getElementById('handP1');
-        handP1Element.classList.add('fanned'); // Add the fanned class
         handP1Element.innerHTML = '';
         handP1.forEach((card, idx) => {
             const suitClass = card.suit === '♦' ? 'diams' : card.suit === '♥' ? 'hearts' : card.suit === '♠' ? 'spades' : 'clubs';
@@ -131,14 +130,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="rank bottom-right">${card.value}</span>
                 <span class="suit bottom-right-suit">${getSuitSymbol(card.suit)}</span>
             `;
+            cardElement.style.zIndex = idx; // Set z-index to avoid overlapping
             cardElement.addEventListener('click', () => playCard('Player 1', idx, handP1, deckP1, xeriP1, card));
             handP1Element.appendChild(cardElement);
             console.log(`Player 1 card: ${card.value} of ${card.suit}`);
         });
-    
+        
+
         // Update Player 2's hand (hidden if playing against computer)
         const handP2Element = document.getElementById('handP2');
-        handP2Element.classList.add('fanned'); // Add the fanned class
         handP2Element.innerHTML = '';
         handP2.forEach((card, idx) => {
             const suitClass = card.suit === '♦' ? 'diams' : card.suit === '♥' ? 'hearts' : card.suit === '♠' ? 'spades' : 'clubs';
@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="rank bottom-right">${card.value}</span>
                     <span class="suit bottom-right-suit">${getSuitSymbol(card.suit)}</span>
                 `;
+                cardElement.style.zIndex = idx; // Set z-index to avoid overlapping
                 cardElement.addEventListener('click', () => playCard('Player 2', idx, handP2, deckP2, xeriP2, card));
                 console.log(`Player 2 card: ${card.value} of ${card.suit}`);
             } else {
@@ -159,7 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             handP2Element.appendChild(cardElement);
         });
-    
+        
+
         // Update the mid deck
         const deckMidElement = document.getElementById('deckMid');
         deckMidElement.innerHTML = '';
@@ -177,16 +179,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const positionInStack = idx % 10; // Position within the stack
             cardElement.style.setProperty('--i', `${positionInStack}`); // Set position in the stack
             cardElement.style.setProperty('--stack', `${stackNumber}`); // Set stack number for horizontal offset
+            cardElement.style.zIndex = idx; // Set z-index to avoid overlapping
             deckMidElement.appendChild(cardElement);
             console.log(`Table card: ${card.value} of ${card.suit}`);
         });
-    
+
         // Update deck counts
         updateDeckCounts();
-    
+
         console.log("Game board updated");
     }
-    
+
     function getSuitSymbol(suit) {
         switch (suit) {
             case '♠':
@@ -202,16 +205,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getSuitClass(suit) {
+        switch (suit) {
+            case '♠':
+                return 'spades';
+            case '♥':
+                return 'hearts';
+            case '♦':
+                return 'diams';
+            case '♣':
+                return 'clubs';
+            default:
+                return '';
+        }
+    }
+    
     function updateDeckCounts() {
         console.log("Updating deck counts...");
         // Update Player 1's deck count and Xeri count
         const deckP1Element = document.getElementById('deckP1');
         deckP1Element.innerHTML = `Deck: ${deckP1.length} cards<br>Ξερή: ${xeriCountP1}`;
-        
+
         // Update Player 2's deck count and Xeri count
         const deckP2Element = document.getElementById('deckP2');
         deckP2Element.innerHTML = `Deck: ${deckP2.length} cards<br>Ξερή: ${xeriCountP2}`;
-        
+
         console.log("Deck counts updated");
     }
 
@@ -314,36 +332,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function endofgame() {
         isGameEnding = true;
-
+    
         if (lastPlayerToPickUp === 'Player 1') {
             deckP1.push(...deckMid);
             deckMid = [];
-
-            addMessage("Game Ended so Player 1 picked up the last cards!", 'green');
+        
+            addMessage("Game Ended so Player 1 picked up the last cards!", 'Player 1');
         } else if (lastPlayerToPickUp === 'Player 2' || lastPlayerToPickUp === 'Xera.i.') {
             deckP2.push(...deckMid);
             deckMid = [];
-
-            addMessage("Game Ended so Player 2 picked up the last cards!", 'green');
+        
+            addMessage("Game Ended so Player 2 picked up the last cards!", 'Player 2');
         }
-
+        
+    
         let scoreP1 = calculateScore(deckP1, xeriP1);
         let scoreP2 = calculateScore(deckP2, xeriP2);
-
+    
         if (deckP1.length > deckP2.length) {
             scoreP1 += 3;
         } else if (deckP2.length > deckP1.length) {
             scoreP2 += 3;
         }
-
-        const xeriP1Element = document.getElementById('xeriP1');
-        xeriP1Element.innerHTML = deckP1.map(card => `<span class="${getCardStyle(card)}">${card.value}${card.suit}</span>`).join(' ');
-
-        const xeriP2Element = document.getElementById('xeriP2');
-        xeriP2Element.innerHTML = deckP2.map(card => `<span class="${getCardStyle(card)}">${card.value}${card.suit}</span>`).join(' ');
-
-        updateGameBoard();
-
+    
+        const handP1Element = document.getElementById('handP1');
+        handP1Element.innerHTML = deckP1.map(card => `<span class="${getSuitClass(card.suit)}">${card.value}${getSuitSymbol(card.suit)}</span>`).join(' ');
+    
+        const handP2Element = document.getElementById('handP2');
+        handP2Element.innerHTML = deckP2.map(card => `<span class="${getSuitClass(card.suit)}">${card.value}${getSuitSymbol(card.suit)}</span>`).join(' ');
+    
         setTimeout(() => {
             addMessage(`Final Scores:<br>Player 1: ${scoreP1} (Ξερή: ${xeriCountP1})<br>Player 2: ${scoreP2} (Ξερή: ${xeriCountP2})`, 'green');
             if (scoreP1 > scoreP2) {
@@ -355,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 100);
     }
-
+    
     function getCardStyle(card) {
         if (['A', 'K', 'Q', 'J', '10'].includes(card.value) || (card.value === '10' && card.suit === '♦') || (card.value === '2' && card.suit === '♣')) {
             return 'underline';
@@ -364,27 +381,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addMessage(message, player) {
-    const messageBox = document.getElementById('messageBoxContent');
-    const messageElement = document.createElement('div');
+        const messageBox = document.getElementById('messageBoxContent');
+        const messageElement = document.createElement('div');
     
-    // Create a span for the player name with the appropriate color
-    const playerSpan = document.createElement('span');
-    playerSpan.style.color = player === 'Player 1' ? 'darkred' : 'darkblue';
-    playerSpan.textContent = player;
+        // Create a text node for the rest of the message
+        let messageText = message;
+        
+        // If player is provided, wrap their name in a span with the appropriate color
+        if (player) {
+            const playerColor = player === 'Player 1' ? 'darkred' : player === 'Player 2' ? 'darkblue' : 'green';
+            const playerSpan = `<span style="color:${playerColor}">${player}</span>`;
+            messageText = messageText.replace(player, playerSpan);
+        }
     
-    // Create a text node for the rest of the message
-    const messageText = document.createElement('span');
-    messageText.innerHTML = message.replace(player, '');
-
+        // Set the innerHTML of the message element to the formatted message text
+        messageElement.innerHTML = messageText;
     
-    // Append the player span and the rest of the message to the message element
-    messageElement.appendChild(playerSpan);
-    messageElement.appendChild(messageText);
-    
-    messageBox.appendChild(messageElement);
-    messageBox.scrollTop = messageBox.scrollHeight;
+        messageBox.appendChild(messageElement);
+        messageBox.scrollTop = messageBox.scrollHeight;
     }
-
+    
 
     function setCardStyles(spread, spacing) {
         document.documentElement.style.setProperty('--spread', `${spread}deg`);

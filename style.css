@@ -2,8 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap'); /* Import Roboto font */
 
 :root {
-    --spread: 80deg;
-    --spacing: 12%;
     --table-card-spacing: 25px; /* Add this variable for table card spacing */
 }
 
@@ -96,7 +94,6 @@ h2 {
     border-left: 3px solid #ccc; /* Left border */
 }
 
-
 /* Hand, deck, and xeri styles */
 
 .hand, .deck, .xeri {
@@ -152,57 +149,6 @@ button:hover {
     pointer-events: auto;
 }
 
-/* Fanned hand styles */
-
-.hand.fanned {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: 8em;
-}
-
-.hand.fanned .card {
-    position: absolute;
-    transition: transform 0.3s ease;
-}
-
-.hand.fanned .card:nth-child(1) {
-    transform: rotate(calc(-1 * var(--spread))) translateX(calc(-3 * var(--spacing)));
-}
-
-.hand.fanned .card:nth-child(2) {
-    transform: rotate(calc(-0.6 * var(--spread))) translateX(calc(-2 * var(--spacing)));
-}
-
-.hand.fanned .card:nth-child(3) {
-    transform: rotate(calc(-0.2 * var(--spread))) translateX(calc(-1 * var(--spacing)));
-}
-
-.hand.fanned .card:nth-child(4) {
-    transform: rotate(calc(0.2 * var(--spread))) translateX(calc(0 * var(--spacing)));
-}
-
-.hand.fanned .card:nth-child(5) {
-    transform: rotate(calc(0.6 * var(--spread))) translateX(calc(1 * var(--spacing)));
-}
-
-.hand.fanned .card:nth-child(6) {
-    transform: rotate(calc(1 * var(--spread))) translateX(calc(2 * var(--spacing)));
-}
-
-.hand.fanned .card:nth-child(1) { z-index: 6; }
-.hand.fanned .card:nth-child(2) { z-index: 5; }
-.hand.fanned .card:nth-child(3) { z-index: 4; }
-.hand.fanned .card:nth-child(4) { z-index: 3; }
-.hand.fanned .card:nth-child(5) { z-index: 2; }
-.hand.fanned .card:nth-child(6) { z-index: 1; }
-
-.hand.fanned .card {
-    transform: rotate(calc(var(--spread) * (var(--i) - 2.5)));
-    left: calc(var(--spacing) * var(--i));
-}
-
 /* Stack the cards in the middle box with a slight overlap */
 .deck.playingCards {
     position: fixed;
@@ -214,7 +160,6 @@ button:hover {
     top: 0;
     left: 50%;
     transform: translate(-50%, calc(var(--i) * var(--table-card-spacing))); /* Use the variable for spacing */
-    /* transform: translate(calc(-50% + var(--row) * 30%), calc(var(--i) * var(--table-card-spacing))); /* Adjust the position to handle two rows */
 }
 
 /* Add this to ensure card images are shown correctly */
@@ -232,15 +177,12 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* align-items: center;*/
 }
 
 #deckMid .card {
     width: 3.3em;
     height: 4.6em;
     position: absolute;
-
-    /* left: 30%; */
     left: calc(30% + (var(--stack) * 2em)); /* Adjust the position based on stack number */
 }
 
@@ -253,16 +195,6 @@ button:hover {
 }
 
 /* Ensure the position is absolute and correctly placed */
-.rank.bottom-right {
-    position: absolute !important;
-    bottom: 5px !important;
-    right: 5px !important;
-    font-size: 1em; /* Adjust size as needed */
-    z-index: 10; /* Ensure it appears on top of other elements */
-    color: inherit; /* Use the same color as the top rank */
-}
-
-/* Ensure the position is absolute and correctly placed */
 .rank.bottom-right, .suit.bottom-right-suit {
     position: absolute !important;
     font-size: 0.6em; /* Adjust size as needed */
@@ -270,25 +202,51 @@ button:hover {
     color: inherit; /* Use the same color as the top rank */
 }
 
-/* Ensure the position is absolute and correctly placed */
 .rank.bottom-right {
-    position: absolute !important;
     bottom: 5px !important;
     right: 5px !important;
     font-size: 1em; /* Adjust size as needed */
-    z-index: 10; /* Ensure it appears on top of other elements */
-    color: inherit; /* Use the same color as the top rank */
 }
 
 .suit.bottom-right-suit {
-    position: absolute !important;
     bottom: 25px !important;
     right: 5px !important;
     font-size: 1em; /* Adjust size as needed */
-    z-index: 10; /* Ensure it appears on top of other elements */
-    color: inherit; /* Use the same color as the top suit */
 }
 
 .suit.bottom-right-suit::after {
     display: none !important;
 }
+
+.hand .card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    /* Add other necessary styles */
+}
+
+.hand .card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    /* Add other necessary styles */
+}
+
+.hand span {
+    margin-right: 0.2em;
+}
+
+.hand span.spades {
+    color: black !important;
+}
+
+.hand span.hearts {
+    color: red !important;
+}
+
+.hand span.diams {
+    color: red !important;
+}
+
+.hand span.clubs {
+    color: black !important;
+}
+
