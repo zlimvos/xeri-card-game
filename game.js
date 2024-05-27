@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let deckP1 = [];
     let deckP2 = [];
     let deckMid = [];
-    let TopCard = [];
+    let topCard = [];
     let xeriP1 = [];
     let xeriP2 = [];
     let currentPlayer = 'Player 1';
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         deckP1 = [];
         deckP2 = [];
         deckMid = [];
-        TopCard = [];
+        topCard = [];
         xeriP1 = [];
         xeriP2 = [];
         xeriCountP1 = 0;
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             deckMid.push(deck.pop());
         }
         if (deckMid.length > 0) {
-            TopCard.push(deckMid[deckMid.length - 1]);
+            topCard.push(deckMid[deckMid.length - 1]);
         }
         console.log("First deal done");
         console.log("Player 1 hand:", handP1);
@@ -135,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
             handP1Element.appendChild(cardElement);
             console.log(`Player 1 card: ${card.value} of ${card.suit}`);
         });
-        
 
         // Update Player 2's hand (hidden if playing against computer)
         const handP2Element = document.getElementById('handP2');
@@ -160,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             handP2Element.appendChild(cardElement);
         });
-        
 
         // Update the mid deck
         const deckMidElement = document.getElementById('deckMid');
@@ -219,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return '';
         }
     }
-    
+
     function updateDeckCounts() {
         console.log("Updating deck counts...");
         // Update Player 1's deck count and Xeri count
@@ -233,32 +231,31 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Deck counts updated");
     }
 
-    // Example usage in your existing functions
     function playCard(player, idx, hand, deckPlayer, xeri, chosen_card) {
-        if (deckMid.length === 1 && TopCard.length > 0 && (chosen_card.value === TopCard[0].value)) {
+        if (deckMid.length === 1 && topCard.length > 0 && (chosen_card.value === topCard[0].value)) {
             addMessage(`${player} made a Ξερή with ${chosen_card.value} ${chosen_card.suit}`, player);
             xeri.push(chosen_card);
             deckPlayer.push(...deckMid, chosen_card);
             deckMid = [];
-            TopCard = [];
+            topCard = [];
             lastPlayerToPickUp = player;
             if (player === 'Player 1') {
                 xeriCountP1++;
             } else {
                 xeriCountP2++;
             }
-        } else if (TopCard.length > 0 && (chosen_card.value === 'J' || chosen_card.value === TopCard[0].value)) {
+        } else if (topCard.length > 0 && (chosen_card.value === 'J' || chosen_card.value === topCard[0].value)) {
             deckPlayer.push(...deckMid, chosen_card);
             let cardsCollected = deckMid.length;
             deckMid = [];
-            TopCard = [];
+            topCard = [];
             setTimeout(() => {
                 addMessage(`${player} collects ${cardsCollected} cards from the table with ${chosen_card.value} ${chosen_card.suit}`, player);
             }, 100);
             lastPlayerToPickUp = player;
         } else {
             deckMid.push(chosen_card);
-            TopCard[0] = deckMid[deckMid.length - 1];
+            topCard[0] = deckMid[deckMid.length - 1];
         }
 
         hand.splice(idx, 1);
@@ -281,8 +278,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let xeriMove = null;
 
         handP2.forEach((card, idx) => {
-            if (TopCard.length > 0) {
-                if (card.value === TopCard[0].value) {
+            if (topCard.length > 0) {
+                if (card.value === topCard[0].value) {
                     xeriMove = { card, idx };
                 }
                 if (card.value === 'J') {
@@ -331,36 +328,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function endofgame() {
-        isGameEnding = true;
-    
         if (lastPlayerToPickUp === 'Player 1') {
             deckP1.push(...deckMid);
             deckMid = [];
-        
             addMessage("Game Ended so Player 1 picked up the last cards!", 'Player 1');
         } else if (lastPlayerToPickUp === 'Player 2' || lastPlayerToPickUp === 'Xera.i.') {
             deckP2.push(...deckMid);
             deckMid = [];
-        
             addMessage("Game Ended so Player 2 picked up the last cards!", 'Player 2');
         }
-        
-    
+
         let scoreP1 = calculateScore(deckP1, xeriP1);
         let scoreP2 = calculateScore(deckP2, xeriP2);
-    
+
         if (deckP1.length > deckP2.length) {
             scoreP1 += 3;
         } else if (deckP2.length > deckP1.length) {
             scoreP2 += 3;
         }
-    
+
         const handP1Element = document.getElementById('handP1');
         handP1Element.innerHTML = deckP1.map(card => `<span class="${getSuitClass(card.suit)}">${card.value}${getSuitSymbol(card.suit)}</span>`).join(' ');
-    
+
         const handP2Element = document.getElementById('handP2');
         handP2Element.innerHTML = deckP2.map(card => `<span class="${getSuitClass(card.suit)}">${card.value}${getSuitSymbol(card.suit)}</span>`).join(' ');
-    
+
         setTimeout(() => {
             addMessage(`Final Scores:<br>Player 1: ${scoreP1} (Ξερή: ${xeriCountP1})<br>Player 2: ${scoreP2} (Ξερή: ${xeriCountP2})`, 'green');
             if (scoreP1 > scoreP2) {
@@ -372,35 +364,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 100);
     }
-    
-    function getCardStyle(card) {
-        if (['A', 'K', 'Q', 'J', '10'].includes(card.value) || (card.value === '10' && card.suit === '♦') || (card.value === '2' && card.suit === '♣')) {
-            return 'underline';
-        }
-        return '';
-    }
 
     function addMessage(message, player) {
         const messageBox = document.getElementById('messageBoxContent');
         const messageElement = document.createElement('div');
-    
-        // Create a text node for the rest of the message
+
         let messageText = message;
-        
-        // If player is provided, wrap their name in a span with the appropriate color
+
         if (player) {
             const playerColor = player === 'Player 1' ? 'darkred' : player === 'Player 2' ? 'darkblue' : 'green';
             const playerSpan = `<span style="color:${playerColor}">${player}</span>`;
             messageText = messageText.replace(player, playerSpan);
         }
-    
-        // Set the innerHTML of the message element to the formatted message text
+
         messageElement.innerHTML = messageText;
-    
+
         messageBox.appendChild(messageElement);
         messageBox.scrollTop = messageBox.scrollHeight;
     }
-    
 
     function setCardStyles(spread, spacing) {
         document.documentElement.style.setProperty('--spread', `${spread}deg`);
