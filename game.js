@@ -16,14 +16,88 @@ document.addEventListener('DOMContentLoaded', () => {
     let xeriCountP1 = 0;
     let xeriCountP2 = 0;
     let gameMode = 'twoPlayer';
+    let isGameEnding = false;
 
     function setGameMode(mode) {
         gameMode = mode;
         document.getElementById('game-mode').style.display = 'none';
         if (mode === 'computer') {
             document.getElementById('player2Title').innerText = 'Xera.i.';
+            document.getElementById('player2Label').innerText = 'Xera.i.';
         }
-        startGame();
+        showCardRevealModal();
+    }
+
+    function showCardRevealModal() {
+        const cardRevealModal = document.getElementById('cardRevealModal');
+        cardRevealModal.style.display = 'block';
+
+        const card1 = getRandomCard();
+        const card2 = getRandomCard();
+
+        renderCard(card1, 'revealCard1');
+        renderCard(card2, 'revealCard2');
+
+        const player1Value = getCardValue(card1);
+        const player2Value = getCardValue(card2);
+        let startingPlayer = '';
+
+        if (player1Value > player2Value) {
+            startingPlayer = 'Player 1';
+            currentPlayer = 'Player 1';
+        } else if (player2Value > player1Value) {
+            startingPlayer = gameMode === 'computer' ? 'Xera.i.' : 'Player 2';
+            currentPlayer = 'Player 2';
+        } else {
+            startingPlayer = 'Tie! Re-roll!';
+            setTimeout(showCardRevealModal, 3000); // Re-roll if it's a tie
+            return;
+        }
+
+        document.getElementById('startingPlayerMessage').textContent = `${startingPlayer} starts!`;
+
+        setTimeout(() => {
+            cardRevealModal.style.display = 'none';
+            startGame();
+        }, 3000);
+    }
+
+    function getRandomCard() {
+        const suits = ['♠', '♥', '♦', '♣'];
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        return { value: values[Math.floor(Math.random() * values.length)], suit: suits[Math.floor(Math.random() * suits.length)] };
+    }
+
+    function getCardValue(card) {
+        const cardValues = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14 };
+        return cardValues[card.value];
+    }
+
+    function getSuitSymbol(suit) {
+        switch (suit) {
+            case '♠':
+                return '&spades;';
+            case '♥':
+                return '&hearts;';
+            case '♦':
+                return '&diams;';
+            case '♣':
+                return '&clubs;';
+            default:
+                return '';
+        }
+    }
+
+    function renderCard(card, elementId) {
+        const suitClass = card.suit === '♦' ? 'diams' : card.suit === '♥' ? 'hearts' : card.suit === '♠' ? 'spades' : 'clubs';
+        const cardElement = document.getElementById(elementId);
+        cardElement.className = `card rank-${card.value.toLowerCase()} ${suitClass}`;
+        cardElement.innerHTML = `
+            <span class="rank">${card.value}</span>
+            <span class="suit">${getSuitSymbol(card.suit)}</span>
+            <span class="rank bottom-right">${card.value}</span>
+            <span class="suit bottom-right-suit">${getSuitSymbol(card.suit)}</span>
+        `;
     }
 
     function startGame() {
@@ -48,8 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
         xeriP2 = [];
         xeriCountP1 = 0;
         xeriCountP2 = 0;
-        currentPlayer = 'Player 1';
         lastPlayerToPickUp = null;
+        isGameEnding = false;
         console.log("Game initialized");
         console.log(deck);
     }
@@ -71,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createDeck() {
         const suits = ['♠', '♥', '♦', '♣'];
-        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         let deck = [];
         for (let suit of suits) {
             for (let value of values) {
@@ -188,36 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Game board updated");
     }
 
-    function getSuitSymbol(suit) {
-        switch (suit) {
-            case '♠':
-                return '&spades;';
-            case '♥':
-                return '&hearts;';
-            case '♦':
-                return '&diams;';
-            case '♣':
-                return '&clubs;';
-            default:
-                return '';
-        }
-    }
-
-    function getSuitClass(suit) {
-        switch (suit) {
-            case '♠':
-                return 'spades';
-            case '♥':
-                return 'hearts';
-            case '♦':
-                return 'diams';
-            case '♣':
-                return 'clubs';
-            default:
-                return '';
-        }
-    }
-
     function updateDeckCounts() {
         console.log("Updating deck counts...");
         // Update Player 1's deck count and Xeri count
@@ -328,13 +372,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function endofgame() {
+        isGameEnding = true;
+
         if (lastPlayerToPickUp === 'Player 1') {
             deckP1.push(...deckMid);
             deckMid = [];
+
             addMessage("Game Ended so Player 1 picked up the last cards!", 'Player 1');
         } else if (lastPlayerToPickUp === 'Player 2' || lastPlayerToPickUp === 'Xera.i.') {
             deckP2.push(...deckMid);
             deckMid = [];
+
             addMessage("Game Ended so Player 2 picked up the last cards!", 'Player 2');
         }
 
@@ -365,18 +413,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
 
+    function getSuitClass(suit) {
+        switch (suit) {
+            case '♠':
+                return 'spades';
+            case '♥':
+                return 'hearts';
+            case '♦':
+                return 'diams';
+            case '♣':
+                return 'clubs';
+            default:
+                return '';
+        }
+    }
+
     function addMessage(message, player) {
         const messageBox = document.getElementById('messageBoxContent');
         const messageElement = document.createElement('div');
 
+        // Create a text node for the rest of the message
         let messageText = message;
 
+        // If player is provided, wrap their name in a span with the appropriate color
         if (player) {
             const playerColor = player === 'Player 1' ? 'darkred' : player === 'Player 2' ? 'darkblue' : 'green';
             const playerSpan = `<span style="color:${playerColor}">${player}</span>`;
             messageText = messageText.replace(player, playerSpan);
         }
 
+        // Set the innerHTML of the message element to the formatted message text
         messageElement.innerHTML = messageText;
 
         messageBox.appendChild(messageElement);

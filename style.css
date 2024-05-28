@@ -224,12 +224,6 @@ button:hover {
     /* Add other necessary styles */
 }
 
-.hand .card {
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    /* Add other necessary styles */
-}
-
 .hand span {
     margin-right: 0.2em;
 }
@@ -248,5 +242,93 @@ button:hover {
 
 .hand span.clubs {
     color: black !important;
+}
+
+/* Modal specific styles */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.card-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px; /* Add space between cards */
+}
+
+/* Modal specific styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.card-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px; /* Add space between cards */
+}
+
+.modal .card-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal .label {
+    font-size: 1em;
+    margin-bottom: 5px;
+}
+
+.modal .card {
+    width: 4em; /* 20% larger than the original 3.3em */
+    height: 5.52em; /* 20% larger than the original 4.6em */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #000;
+    border-radius: 10%;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.modal .card .rank,
+.modal .card .suit,
+.modal .card .bottom-right,
+.modal .card .bottom-right-suit {
+    position: relative;
+    display: inline-block;
+    font-size: 1.2em;
+}
+
+.modal .card .bottom-right,
+.modal .card .bottom-right-suit {
+    display: none; /* Hide the extra bottom right symbols in the modal */
+}
+
+.message {
+    margin-top: 10px;
+    font-size: 1.2em;
+    color: darkblue;
+    text-align: center;
 }
 

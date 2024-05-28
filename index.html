@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/cards.css">
 </head>
 <body>
-    <h1>Xeri Card Game</h1>
+    <h1 class="cool-title">Xeri Card Game</h1>
     
     <div id="game-mode">
         <button id="twoPlayerMode">Two Player Mode</button>
@@ -35,6 +35,20 @@
         <div id="messageBox">
             <div id="messageBoxContent" class="messages"></div>
         </div>        
+    </div>
+
+    <div id="cardRevealModal" class="modal">
+        <div class="card-container">
+            <div class="card-wrapper">
+                <div class="label">Player 1</div>
+                <div id="revealCard1" class="card"></div>
+            </div>
+            <div class="card-wrapper">
+                <div class="label" id="player2Label">Player 2</div>
+                <div id="revealCard2" class="card"></div>
+            </div>
+        </div>
+        <div id="startingPlayerMessage" class="message"></div>
     </div>
     
     <script src="game.js"></script>
