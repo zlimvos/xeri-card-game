@@ -1,7 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Event listeners for game mode selection
     document.getElementById('twoPlayerMode').addEventListener('click', () => setGameMode('twoPlayer'));
     document.getElementById('computerMode').addEventListener('click', () => setGameMode('computer'));
 
+    // Event listeners for new game buttons
+    document.getElementById('playAgain').addEventListener('click', () => {
+        document.getElementById('newGameButtons').style.display = 'none';
+        startGame();
+    });
+
+    document.getElementById('enough').addEventListener('click', () => {
+        document.getElementById('newGameButtons').style.display = 'none';
+        overallScoreP1 = 0;
+        overallScoreP2 = 0;
+        updateOverallScore();
+        document.getElementById('game-board').style.display = 'none';
+        document.getElementById('game-mode').style.display = 'block';
+    });
+
+    // Variables
     let handP1 = [];
     let handP2 = [];
     let deckP1 = [];
@@ -17,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let xeriCountP2 = 0;
     let gameMode = 'twoPlayer';
     let isGameEnding = false;
+    let overallScoreP1 = 0;
+    let overallScoreP2 = 0;
 
     function setGameMode(mode) {
         gameMode = mode;
@@ -377,16 +396,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lastPlayerToPickUp === 'Player 1') {
             deckP1.push(...deckMid);
             deckMid = [];
-
             addMessage("Game Ended so Player 1 picked up the last cards!", 'Player 1');
         } else if (lastPlayerToPickUp === 'Player 2' || lastPlayerToPickUp === 'Xera.i.') {
             deckP2.push(...deckMid);
             deckMid = [];
-
             addMessage("Game Ended so Player 2 picked up the last cards!", 'Player 2');
         }
 
-        // Add this line to clear the table visually
         updateGameBoard();
 
         let scoreP1 = calculateScore(deckP1, xeriP1);
@@ -408,15 +424,29 @@ document.addEventListener('DOMContentLoaded', () => {
             addMessage(`Final Scores:<br>Player 1: ${scoreP1} (Ξερή: ${xeriCountP1})<br>Player 2: ${scoreP2} (Ξερή: ${xeriCountP2})`, 'green');
             if (scoreP1 > scoreP2) {
                 addMessage("Player 1 wins!", 'red');
+                overallScoreP1++;
             } else if (scoreP2 > scoreP1) {
                 addMessage("Player 2 wins!", 'blue');
+                overallScoreP2++;
             } else {
                 addMessage("It's a tie!", 'green');
             }
-        
-            displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2);
 
+            // Call the function to display the final scores in the table column
+            displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2);
+            updateOverallScore();
+            showNewGameButtons();
         }, 100);
+    }
+
+    function updateOverallScore() {
+        const overallScoreElement = document.getElementById('overallScore');
+        overallScoreElement.textContent = `Overall Score: ${overallScoreP1}-${overallScoreP2}`;
+    }
+
+    function showNewGameButtons() {
+        const newGameButtonsElement = document.getElementById('newGameButtons');
+        newGameButtonsElement.style.display = 'block';
     }
 
     function getSuitClass(suit) {
