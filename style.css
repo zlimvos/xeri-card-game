@@ -95,8 +95,7 @@ h2 {
 }
 
 /* Hand, deck, and xeri styles */
-
-.hand, .deck, .xeri {
+.hand, .deck {
     border: 1px solid #000;
     min-height: 50px;
     margin-top: 10px;
@@ -109,7 +108,7 @@ h2 {
     flex-wrap: wrap;
 }
 
-.hand div, .deck div, .xeri div {
+.hand div, .deck div {
     margin: 5px;
 }
 
@@ -332,3 +331,13 @@ button:hover {
     text-align: center;
 }
 
+.final-scores {
+    text-align: center;
+    font-family: Consolas, "Courier New", monospace; /* Use monospaced font */
+    font-size: 1em;
+    color: #333;
+}
+
+.final-scores p {
+    margin: 5px 0;
+}

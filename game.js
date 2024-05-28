@@ -386,6 +386,9 @@ document.addEventListener('DOMContentLoaded', () => {
             addMessage("Game Ended so Player 2 picked up the last cards!", 'Player 2');
         }
 
+        // Add this line to clear the table visually
+        updateGameBoard();
+
         let scoreP1 = calculateScore(deckP1, xeriP1);
         let scoreP2 = calculateScore(deckP2, xeriP2);
 
@@ -410,6 +413,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 addMessage("It's a tie!", 'green');
             }
+        
+            displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2);
+
         }, 100);
     }
 
@@ -456,3 +462,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setCardStyles(0, -30);
 });
+
+function displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2) {
+    const deckMidElement = document.getElementById('deckMid');
+    let winnerMessage = "";
+
+    if (scoreP1 > scoreP2) {
+        winnerMessage = "Player 1 wins!";
+    } else if (scoreP2 > scoreP1) {
+        winnerMessage = "Player 2 wins!";
+    } else {
+        winnerMessage = "It's a tie!";
+    }
+
+    deckMidElement.innerHTML = `
+        <div class="final-scores">
+            <p>Final Scores:</p>
+            <p>Player 1: ${scoreP1} (Ξερή: ${xeriCountP1})</p>
+            <p>Player 2: ${scoreP2} (Ξερή: ${xeriCountP2})</p>
+            <p>${winnerMessage}</p>
+        </div>
+    `;
+}
