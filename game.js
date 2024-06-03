@@ -6,7 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners for new game buttons
     document.getElementById('playAgain').addEventListener('click', () => {
         document.getElementById('newGameButtons').style.display = 'none';
-        startGame();
+        lastStarter = lastWinner; // Set the next starter as the winner of the last game or the same starter if it was a tie
+        console.log(`Next game will start with: ${lastStarter}`);
+        startGame(lastStarter);
     });
 
     document.getElementById('enough').addEventListener('click', () => {
@@ -36,9 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let isGameEnding = false;
     let overallScoreP1 = 0;
     let overallScoreP2 = 0;
+    let lastWinner = '';
+    let lastStarter = 'Player 1';
 
     function setGameMode(mode) {
         gameMode = mode;
+        console.log(`Game mode set to: ${mode}`);
         document.getElementById('game-mode').style.display = 'none';
         if (mode === 'computer') {
             document.getElementById('player2Title').innerText = 'Xera.i.';
@@ -61,23 +66,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const player2Value = getCardValue(card2);
         let startingPlayer = '';
 
+        console.log(`Player 1 drew: ${card1.value} of ${card1.suit} (value: ${player1Value})`);
+        console.log(`Player 2/Xera.i. drew: ${card2.value} of ${card2.suit} (value: ${player2Value})`);
+
         if (player1Value > player2Value) {
             startingPlayer = 'Player 1';
             currentPlayer = 'Player 1';
         } else if (player2Value > player1Value) {
             startingPlayer = gameMode === 'computer' ? 'Xera.i.' : 'Player 2';
-            currentPlayer = 'Player 2';
+            currentPlayer = startingPlayer;
         } else {
             startingPlayer = 'Tie! Re-roll!';
+            console.log('Tie on draw, re-rolling...');
             setTimeout(showCardRevealModal, 3000); // Re-roll if it's a tie
             return;
         }
 
+        console.log(`Starting player: ${startingPlayer}`);
         document.getElementById('startingPlayerMessage').textContent = `${startingPlayer} starts!`;
 
         setTimeout(() => {
             cardRevealModal.style.display = 'none';
-            startGame();
+            startGame(currentPlayer);
         }, 3000);
     }
 
@@ -119,9 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    function startGame() {
+    function startGame(startingPlayer = 'Player 1') {
+        console.log(`Starting game with: ${startingPlayer}`);
         initializeGame();
         firstDeal();
+        currentPlayer = startingPlayer; // Set the starting player
         updateGameBoard();
         enableCardClicks();
         document.getElementById('game-board').style.display = 'flex';
@@ -425,15 +437,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scoreP1 > scoreP2) {
                 addMessage("Player 1 wins!", 'red');
                 overallScoreP1++;
+                lastWinner = 'Player 1';
             } else if (scoreP2 > scoreP1) {
                 addMessage("Player 2 wins!", 'blue');
                 overallScoreP2++;
+                lastWinner = 'Player 2';
             } else {
                 addMessage("It's a tie!", 'green');
+                lastWinner = lastStarter; // Set lastWinner to whoever started the previous game
             }
 
             // Call the function to display the final scores in the table column
-            displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2);
+            console.log('Calling displayFinalScoresInTable...');
+            displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2, lastWinner);
             updateOverallScore();
             showNewGameButtons();
         }, 100);
@@ -467,23 +483,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function addMessage(message, player) {
         const messageBox = document.getElementById('messageBoxContent');
         const messageElement = document.createElement('div');
-
+    
         // Create a text node for the rest of the message
         let messageText = message;
-
+    
         // If player is provided, wrap their name in a span with the appropriate color
         if (player) {
-            const playerColor = player === 'Player 1' ? 'darkred' : player === 'Player 2' ? 'darkblue' : 'green';
+            const playerColor = player === 'Player 1' ? 'darkred' : (player === 'Player 2' || player === 'Xera.i.') ? 'darkblue' : 'green';
             const playerSpan = `<span style="color:${playerColor}">${player}</span>`;
             messageText = messageText.replace(player, playerSpan);
         }
-
-        // Set the innerHTML of the message element to the formatted message text
-        messageElement.innerHTML = messageText;
-
-        messageBox.appendChild(messageElement);
-        messageBox.scrollTop = messageBox.scrollHeight;
+    
+        // Create a timestamp and prepend it to the message text
+        const timestamp = new Date().toLocaleTimeString();
+        messageElement.innerHTML = `[${timestamp}] ${messageText}`;
+    
+        messageBox.prepend(messageElement);
+        messageBox.scrollTop = 0;
     }
+    
 
     function setCardStyles(spread, spacing) {
         document.documentElement.style.setProperty('--spread', `${spread}deg`);
@@ -493,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setCardStyles(0, -30);
 });
 
-function displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2) {
+function displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2, lastWinner) {
     const deckMidElement = document.getElementById('deckMid');
     let winnerMessage = "";
 
@@ -505,12 +523,15 @@ function displayFinalScoresInTable(scoreP1, scoreP2, xeriCountP1, xeriCountP2) {
         winnerMessage = "It's a tie!";
     }
 
+    console.log(`Displaying final scores: Player 1: ${scoreP1}, Player 2: ${scoreP2}, Winner: ${lastWinner}`);
+
     deckMidElement.innerHTML = `
         <div class="final-scores">
             <p>Final Scores:</p>
             <p>Player 1: ${scoreP1} (Ξερή: ${xeriCountP1})</p>
             <p>Player 2: ${scoreP2} (Ξερή: ${xeriCountP2})</p>
             <p>${winnerMessage}</p>
+            <p>${lastWinner} won last game, so will start the next one!</p>
         </div>
     `;
 }
